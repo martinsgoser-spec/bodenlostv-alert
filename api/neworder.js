@@ -6,16 +6,18 @@ export default function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const { product, amount } = req.body;
+
   const filePath = path.join(process.cwd(), "public", "data.json");
 
   const data = {
-    product: req.body.product || null,
-    amount: req.body.amount || null,
+    product: product || null,
+    amount: amount || null,
     show: true
   };
 
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  fs.writeFileSync(filePath, JSON.stringify(data));
 
-  res.status(200).json({ ok: true, saved: data });
+  return res.status(200).json({ ok: true });
 }
