@@ -16,6 +16,7 @@
 </head>
 <body>
   <div id="alert"></div>
+
 <script>
 async function check() {
   const data = await fetch("https://bodenlostv-alert.vercel.app/api/order?_=" + Date.now())
@@ -30,6 +31,6 @@ async function check() {
 }
 setInterval(check, 2000);
 </script>
+
 </body>
 </html>
-
