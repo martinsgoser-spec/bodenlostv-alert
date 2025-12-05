@@ -1,16 +1,16 @@
-export default function handler(req, res) {
-  const fs = require("fs");
-  const path = require("path");
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-  const data = {
-    product: req.body.product,
-    amount: req.body.amount,
-    show: true
-  };
+  const { product, amount } = req.body;
 
-  const filePath = path.join(process.cwd(), "public", "data.json");
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(data));
+  if (!product || !amount) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
 
-  res.status(200).json({ ok: true });
+  // Speichere die Daten im globalen Speicher (nur während der Laufzeit)
+  global.orderData = { product, amount, show: true };
+
+  return res.status(200).json({ ok: true });
 }
