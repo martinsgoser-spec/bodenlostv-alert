@@ -1,11 +1,6 @@
-import fs from "fs";
-import path from "path";
-
 export default function handler(req, res) {
-  const filePath = path.join(process.cwd(), "public", "data.json");
-
-  // Falls Datei nicht existiert → Standardwerte zurückgeben
-  if (!fs.existsSync(filePath)) {
+  // Falls noch nie eine Bestellung gespeichert wurde → show = false
+  if (!global.orderData) {
     return res.status(200).json({
       product: null,
       amount: null,
@@ -13,6 +8,6 @@ export default function handler(req, res) {
     });
   }
 
-  const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  res.status(200).json(data);
+  // Gespeicherte Bestellung zurückgeben
+  return res.status(200).json(global.orderData);
 }
