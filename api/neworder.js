@@ -1,23 +1,39 @@
-import fs from "fs";
-import path from "path";
+let lastOrder = {
+  product: null,
+  amount: null,
+  show: false
+};
 
 export default function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+  if (req.method === "GET") {
+    const { product, amount, show } = req.query;
+
+    if (product && amount && show) {
+      lastOrder = {
+        product,
+        amount,
+        show: show === "true"
+      };
+
+      return res.status(200).json({ ok: true, mode: "GET-triggered", lastOrder });
+    }
+
+    return res.status(200).json({ ok: true, lastOrder });
   }
 
-  const { product, amount } = req.body;
+  if (req.method === "POST") {
+    const { product, amount, show } = req.body;
 
-  const filePath = path.join(process.cwd(), "public", "data.json");
+    lastOrder = {
+      product: product || null,
+      amount: amount || null,
+      show: show ?? true
+    };
 
-  const data = {
-    product: product || null,
-    amount: amount || null,
-    show: true
-  };
+    return res.status(200).json({ ok: true, mode: "POST-triggered", lastOrder });
+  }
 
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, JSON.stringify(data));
-
-  return res.status(200).json({ ok: true });
+  return res.status(405).json({ error: "Method not allowed" });
 }
+
+export { lastOrder };
