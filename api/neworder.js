@@ -1,23 +1,21 @@
-let lastOrder = {
-  product: null,
-  amount: null,
-  show: false
-};
+import fs from "fs";
+import path from "path";
 
 export default function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { product, amount } = req.body;
+  const filePath = path.join(process.cwd(), "public", "data.json");
 
-  lastOrder = {
-    product: product || null,
-    amount: amount || null,
+  const data = {
+    product: req.body.product || null,
+    amount: req.body.amount || null,
     show: true
   };
 
-  return res.status(200).json({ ok: true });
-}
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
-export { lastOrder };
+  res.status(200).json({ ok: true, saved: data });
+}
