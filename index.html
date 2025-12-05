@@ -16,11 +16,12 @@
 </head>
 <body>
   <div id="alert"></div>
-
 <script>
 async function check() {
-  const data = await fetch("/data.json?_=" + Date.now()).then(r => r.json());
-  if (data.show) {
+  const data = await fetch("https://bodenlostv-alert.vercel.app/api/order?_=" + Date.now())
+    .then(r => r.json());
+
+  if (data && data.show) {
     const el = document.getElementById("alert");
     el.innerHTML = `🛒 Neue Bestellung!<br><br>${data.amount}× ${data.product}`;
     el.style.opacity = 1;
@@ -31,3 +32,4 @@ setInterval(check, 2000);
 </script>
 </body>
 </html>
+
