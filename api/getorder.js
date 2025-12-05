@@ -1,13 +1,5 @@
-export default function handler(req, res) {
-  // Falls noch nie eine Bestellung gespeichert wurde → show = false
-  if (!global.orderData) {
-    return res.status(200).json({
-      product: null,
-      amount: null,
-      show: false
-    });
-  }
+import { lastOrder } from "./neworder";
 
-  // Gespeicherte Bestellung zurückgeben
-  return res.status(200).json(global.orderData);
+export default function handler(req, res) {
+  return res.status(200).json(lastOrder);
 }
